@@ -4,6 +4,27 @@ A curated list of insanely awesome libraries, packages and resources for Quants 
 
 [![](https://awesome.re/badge.svg)](https://awesome.re)
 
+---
+
+## 🚀 SpeedTrade Application
+
+This repository now includes **SpeedTrade** - a high-performance trading platform built using the awesome quant libraries listed below!
+
+**📖 Get Started:** [SPEEDTRADE_README.md](SPEEDTRADE_README.md)
+
+**Features:**
+- FastAPI backend with JWT authentication
+- React + TypeScript frontend
+- Real-time WebSocket support
+- PostgreSQL database
+- Docker containerization
+- Order management system
+- Portfolio tracking
+
+**Status:** Backend and Frontend foundations complete! Ready for Alpaca/CCXT integration.
+
+---
+
 ## Languages
 
 - [Python](#python)
