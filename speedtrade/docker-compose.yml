@@ -1,0 +1,82 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: speedtrade_postgres
+    environment:
+      POSTGRES_USER: speedtrade
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: speedtrade_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U speedtrade"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - speedtrade-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: speedtrade_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - speedtrade-network
+
+  timescaledb:
+    image: timescale/timescaledb:latest-pg15
+    container_name: speedtrade_timescale
+    environment:
+      POSTGRES_USER: speedtrade
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: market_data
+    ports:
+      - "5433:5432"
+    volumes:
+      - timescale_data:/var/lib/postgresql/data
+    networks:
+      - speedtrade-network
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: speedtrade_backend
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://speedtrade:password@postgres:5432/speedtrade_db
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    env_file:
+      - ./backend/.env
+    networks:
+      - speedtrade-network
+
+volumes:
+  postgres_data:
+  redis_data:
+  timescale_data:
+
+networks:
+  speedtrade-network:
+    driver: bridge
