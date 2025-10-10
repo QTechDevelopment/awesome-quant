@@ -4,14 +4,11 @@ const WS_URL = import.meta.env.VITE_WS_URL || 'ws://localhost:8000';
 
 class WebSocketService {
   private socket: Socket | null = null;
-  private userId: number | null = null;
 
   connect(userId: number) {
     if (this.socket?.connected) {
       return;
     }
-
-    this.userId = userId;
     this.socket = io(WS_URL, {
       transports: ['websocket'],
       path: `/ws/${userId}`,
