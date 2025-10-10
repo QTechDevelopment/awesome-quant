@@ -2,6 +2,25 @@
 
 A high-performance trading platform for stocks and cryptocurrencies under $100, built with FastAPI and React.
 
+## 📸 UI Screenshots
+
+Check out the [demo photos](demo-photos/) to see the application interface in action!
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="demo-photos/01-login-page.png" width="350" alt="Login Page"/><br/>
+      <b>Login Page</b>
+    </td>
+    <td align="center">
+      <img src="demo-photos/02-register-page.png" width="350" alt="Register Page"/><br/>
+      <b>Registration Page</b>
+    </td>
+  </tr>
+</table>
+
+[View all screenshots and UI details →](demo-photos/README.md)
+
 ## Project Status
 
 **Current Phase:** MVP Complete ✅  

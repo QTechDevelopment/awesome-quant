@@ -6,6 +6,10 @@ You're about to build a **Robinhood-like trading platform** for small-time stock
 
 This comprehensive package contains everything you need to go from concept to MVP in **8 weeks**.
 
+## 📸 See It In Action
+
+Want to see what you're building? Check out the [UI screenshots in demo-photos/](demo-photos/) to preview the application interface!
+
 ---
 
 ## 📚 Document Overview
