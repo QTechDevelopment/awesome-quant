@@ -18,6 +18,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://speedtrade:password@db:5432/speedtrade_db
       - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - ALLOWED_ORIGINS=http://localhost:3000,http://frontend
     depends_on:
       - db
       - redis
