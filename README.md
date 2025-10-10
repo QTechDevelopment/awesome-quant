@@ -10,7 +10,8 @@ A curated list of insanely awesome libraries, packages and resources for Quants 
 
 This repository now includes **SpeedTrade** - a high-performance trading platform built using the awesome quant libraries listed below!
 
-**📖 Get Started:** [SPEEDTRADE_README.md](SPEEDTRADE_README.md)
+**📖 Get Started:** [SPEEDTRADE_README.md](SPEEDTRADE_README.md)  
+**📸 View UI Screenshots:** [Demo Photos](demo-photos/)
 
 **Features:**
 - FastAPI backend with JWT authentication
@@ -22,6 +23,23 @@ This repository now includes **SpeedTrade** - a high-performance trading platfor
 - Portfolio tracking
 
 **Status:** Backend and Frontend foundations complete! Ready for Alpaca/CCXT integration.
+
+### 🖼️ UI Preview
+
+<table>
+  <tr>
+    <td align="center">
+      <img src="demo-photos/01-login-page.png" width="400" alt="Login Page"/><br/>
+      <b>Login Page</b>
+    </td>
+    <td align="center">
+      <img src="demo-photos/02-register-page.png" width="400" alt="Register Page"/><br/>
+      <b>Registration Page</b>
+    </td>
+  </tr>
+</table>
+
+[View all screenshots →](demo-photos/README.md)
 
 ---
 
