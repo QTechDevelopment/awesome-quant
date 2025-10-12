@@ -4,6 +4,10 @@ Revision ID: 20251012_135753
 Revises: 
 Create Date: 2025-10-12 13:57:53.000000
 
+Note: This is the first Alembic migration. Previous tables (users, orders, positions, portfolios)
+were created via SQLAlchemy's Base.metadata.create_all() in app/main.py.
+This migration adds the watchlist tables to the existing schema.
+
 """
 from alembic import op
 import sqlalchemy as sa
@@ -11,7 +15,7 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision = '20251012_135753'
-down_revision = None
+down_revision = None  # First migration in Alembic
 branch_labels = None
 depends_on = None
 
