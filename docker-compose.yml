@@ -1,6 +1,16 @@
 version: '3.8'
 
 services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - VITE_API_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000
+
   backend:
     build: ./backend
     ports:
@@ -8,6 +18,8 @@ services:
     environment:
       - DATABASE_URL=postgresql://speedtrade:password@db:5432/speedtrade_db
       - REDIS_URL=redis://redis:6379
+      - SECRET_KEY=dev-secret-key-change-in-production
+      - ALLOWED_ORIGINS=http://localhost:3000,http://frontend
     depends_on:
       - db
       - redis
