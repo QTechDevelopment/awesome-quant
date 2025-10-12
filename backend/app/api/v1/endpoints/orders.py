@@ -1,13 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
+from pydantic import BaseModel, Field
 from app.database import get_db
 from app.models.user import User
-from app.models.order import Order, OrderStatus
+from app.models.order import Order, OrderStatus, OrderSide, OrderType
 from app.schemas.order import OrderCreate, OrderResponse
 from app.api.v1.endpoints.auth import get_current_user
 
 router = APIRouter()
+
+
+class BuyOrderRequest(BaseModel):
+    """Simplified schema for buying stocks"""
+    symbol: str = Field(..., min_length=1, max_length=20)
+    quantity: float = Field(..., gt=0)
+    limit_price: Optional[float] = Field(None, gt=0)
 
 
 @router.post("/", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
@@ -136,3 +144,69 @@ async def cancel_order(
     # TODO: Cancel order in Alpaca/CCXT
     
     return None
+
+
+@router.post("/buy", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
+async def buy_stock(
+    buy_data: BuyOrderRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Convenience endpoint to buy stocks immediately at market or limit price"""
+    
+    # Determine order type based on whether limit_price is provided
+    order_type = OrderType.LIMIT if buy_data.limit_price else OrderType.MARKET
+    
+    # Create buy order
+    new_order = Order(
+        user_id=current_user.id,
+        symbol=buy_data.symbol.upper(),
+        side=OrderSide.BUY,
+        order_type=order_type,
+        quantity=buy_data.quantity,
+        limit_price=buy_data.limit_price,
+        status=OrderStatus.PENDING
+    )
+    
+    db.add(new_order)
+    db.commit()
+    db.refresh(new_order)
+    
+    # TODO: Submit order to Alpaca/CCXT
+    # For now, we just create it in our database
+    
+    return new_order
+
+
+@router.post("/queue-buy", response_model=OrderResponse, status_code=status.HTTP_201_CREATED)
+async def queue_buy_stock(
+    buy_data: BuyOrderRequest,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Queue a buy order to be executed later (always as limit order with PENDING status)"""
+    
+    if not buy_data.limit_price:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Limit price is required for queued buy orders"
+        )
+    
+    # Create queued buy order as limit order
+    queued_order = Order(
+        user_id=current_user.id,
+        symbol=buy_data.symbol.upper(),
+        side=OrderSide.BUY,
+        order_type=OrderType.LIMIT,
+        quantity=buy_data.quantity,
+        limit_price=buy_data.limit_price,
+        status=OrderStatus.PENDING
+    )
+    
+    db.add(queued_order)
+    db.commit()
+    db.refresh(queued_order)
+    
+    # This order stays in PENDING status until manually executed or market conditions are met
+    
+    return queued_order
